@@ -3,8 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'blocs/color/color_bloc.dart';
 import 'blocs/counter/counter_bloc.dart';
+import 'observers/app_bloc_observer.dart';
 
 void main() {
+  Bloc.observer = AppBlocObserver();
   runApp(const MyApp());
 }
 
