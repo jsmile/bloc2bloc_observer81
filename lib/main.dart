@@ -1,12 +1,18 @@
+import 'package:bloc2bloc_observer81/observers/color_bloc_observer.dart';
+import 'package:bloc2bloc_observer81/observers/counter_bloc_observer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'blocs/color/color_bloc.dart';
 import 'blocs/counter/counter_bloc.dart';
-import 'observers/app_bloc_observer.dart';
 
 void main() {
-  Bloc.observer = AppBlocObserver();
+  // BlocOverrides.runZoned(
+  //   () {
+  //     runApp(const MyApp());
+  //   },
+  //   blocObserver: ColorBlocObserver(),
+  // );
   runApp(const MyApp());
 }
 
@@ -46,7 +52,11 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: context.watch<ColorBloc>().state.color,
+      // 9. 개별 상태변화를 관찰하기 위해 BlocObserver를 지정
+      backgroundColor: BlocOverrides.runZoned(
+        () => context.watch<ColorBloc>().state.color,
+        blocObserver: ColorBlocObserver(),
+      ),
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(title),
@@ -69,12 +79,18 @@ class MyHomePage extends StatelessWidget {
               },
             ),
             const SizedBox(height: 20.0),
-            Text(
-              '${context.watch<CounterBloc>().state.counter}',
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 52.0,
-              ),
+            // 9. 개별 상태변화를 관찰하기 위해 BlocObserver를 지정
+            BlocOverrides.runZoned(
+              () {
+                return Text(
+                  '${context.watch<CounterBloc>().state.counter}',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 52.0,
+                  ),
+                );
+              },
+              blocObserver: CounterBlocObserver(),
             ),
             const SizedBox(height: 20.0),
             ElevatedButton(
