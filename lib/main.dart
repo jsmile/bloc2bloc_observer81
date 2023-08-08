@@ -7,12 +7,13 @@ import 'blocs/color/color_bloc.dart';
 import 'blocs/counter/counter_bloc.dart';
 
 void main() {
-  BlocOverrides.runZoned(
-    () {
-      runApp(const MyApp());
-    },
-    blocObserver: ColorBlocObserver(),
-  );
+  // BlocOverrides.runZoned(
+  //   () {
+  //     runApp(const MyApp());
+  //   },
+  //   blocObserver: ColorBlocObserver(),
+  // );
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -51,7 +52,11 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: context.watch<ColorBloc>().state.color,
+      // 9. 개별 상태변화를 관찰하기 위해 BlocObserver를 지정
+      backgroundColor: BlocOverrides.runZoned(
+        () => context.watch<ColorBloc>().state.color,
+        blocObserver: ColorBlocObserver(),
+      ),
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(title),
@@ -74,6 +79,7 @@ class MyHomePage extends StatelessWidget {
               },
             ),
             const SizedBox(height: 20.0),
+            // 9. 개별 상태변화를 관찰하기 위해 BlocObserver를 지정
             BlocOverrides.runZoned(
               () {
                 return Text(
