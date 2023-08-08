@@ -1,13 +1,18 @@
+import 'package:bloc2bloc_observer81/observers/color_bloc_observer.dart';
+import 'package:bloc2bloc_observer81/observers/counter_bloc_observer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'blocs/color/color_bloc.dart';
 import 'blocs/counter/counter_bloc.dart';
-import 'observers/app_bloc_observer.dart';
 
 void main() {
-  Bloc.observer = AppBlocObserver();
-  runApp(const MyApp());
+  BlocOverrides.runZoned(
+    () {
+      runApp(const MyApp());
+    },
+    blocObserver: ColorBlocObserver(),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -69,12 +74,17 @@ class MyHomePage extends StatelessWidget {
               },
             ),
             const SizedBox(height: 20.0),
-            Text(
-              '${context.watch<CounterBloc>().state.counter}',
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 52.0,
-              ),
+            BlocOverrides.runZoned(
+              () {
+                return Text(
+                  '${context.watch<CounterBloc>().state.counter}',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 52.0,
+                  ),
+                );
+              },
+              blocObserver: CounterBlocObserver(),
             ),
             const SizedBox(height: 20.0),
             ElevatedButton(
